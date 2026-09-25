@@ -1,0 +1,31 @@
+name: Sync Raindrop Data
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Läuft automatisch alle 30 Minuten
+  workflow_dispatch: # Erlaubt manuelles Starten per Klick
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Fetch Raindrop Data
+        env:
+          RAINDROP_TOKEN: ${{ secrets.RAINDROP_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $RAINDROP_TOKEN" \
+               "https://api.raindrop.io/rest/v1/raindrops/74164268?perpage=50" \
+               -o data.json
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git commit -m "Update Raindrop data" || exit 0
+          git push
