@@ -19,7 +19,7 @@ jobs:
           RAINDROP_TOKEN: ${{ secrets.RAINDROP_TOKEN }}
         run: |
           curl -H "Authorization: Bearer $RAINDROP_TOKEN" \
-               "https://api.raindrop.io/rest/v1/raindrops/74164268?perpage=50" \
+               "https://api.raindrop.io/rest/v1/raindrops/74164268?perpage=300" \
                -o data.json
 
       - name: Commit and Push
